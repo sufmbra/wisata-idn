@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductApiController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\OrderController;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -25,10 +27,9 @@ Route::middleware('auth:sanctum')->prefix('categories')->group(function () {
     Route::delete('/{id}', [CategoryController::class, 'destroy']);
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('products', ProductController::class);
-});
-
+Route::apiresource('products', ProductController::class);
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::apiResource('products', ProductController::class);
+    Route::get('/orders', [OrderController::class, 'index']);    // Get all orders
+    Route::post('/orders', [OrderController::class, 'store']);   // Store new order
+    Route::get('/orders/{id}', [OrderController::class, 'show']); // Show order by ID
 });
